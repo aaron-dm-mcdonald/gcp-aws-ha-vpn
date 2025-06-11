@@ -11,7 +11,7 @@ resource "aws_vpn_gateway" "vgw" {
   }
 }
 
-# Attach the VGW to the VPC (this happens automatically in most cases, but can be explicit)
+# Attach the VGW to the VPC (can be automatic?)
 resource "aws_vpn_gateway_attachment" "vgw_attachment" {
   vpc_id         = module.aws_network.vpc_id
   vpn_gateway_id = aws_vpn_gateway.vgw.id
@@ -31,7 +31,7 @@ resource "aws_vpn_connection" "vpn_conn" {
   count = var.num_tunnels / 2
 
   customer_gateway_id = aws_customer_gateway.gwy[count.index % 2].id
-  # Selects Customer Gateway in a round-robin manner by cycling through the two gateways (index 0 and 1)
+  # Selects Customer Gateway  by cycling through the two gateways (index 0 and 1)
   # so VPN connections alternate between the two GCP HA VPN interfaces.
   vpn_gateway_id        = aws_vpn_gateway.vgw.id
   type                  = "ipsec.1"
